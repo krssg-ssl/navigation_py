@@ -3,7 +3,9 @@ from ctypes import *
 # Create obstacle and Vector2D classes (in python)
 
 from obstacle import *
-from plays_py.scripts.utils import geometry
+import sys
+sys.path.append('/home/animesh//Documents/Dev/robocup/ssl/src/plays_py/scripts/utils/')
+from geometry import *
 
 # Load shared library : navigation.so
 
@@ -19,6 +21,30 @@ class Vector_Obstacle(object):
 	nav_lib._vector_obstaclep_size.restype = c_int
 	nav_lib._vector_obstaclep_size.argtypes = [c_void_p]
 	nav_lib._vector_obstaclep_get.restype = POINTER(Obstacle)
+	nav_lib._vector_obstaclep_get.argtypes = [c_void_p, c_int]
+	nav_lib._vector_obstaclep_push_back.restype = None
+	nav_lib._vector_obstaclep_push_back.argtypes = [c_void_p, POINTER(Obstacle)]
+
+	def __init__(self):
+		self.vector = Vector_Obstacle.nav_lib._vector_obstaclep_new()
+
+	def __del__(self):
+		Vector_Obstacle.nav_lib._vector_obstaclep_delete(self.vector)
+
+	def __len__(self):
+		return Vector_Obstacle.nav_lib._vector_obstaclep_size(self.vector)
+
+	def __getitem__(self, i):
+		if 0 <= i < len(self):
+			return Vector_Obstacle.nav_lib._vector_obstaclep_get(self.vector, c_int(i))
+		else:
+			raise IndexError('Index out of range')
+
+	def push_back(self, i):
+		Vector_Obstacle.nav_lib._vector_obstaclep_push_back(self.vector, i)
+
+	def __repr__(self):
+		return '[{}]'.format(', '.join(str(self[i]) for i in range(len(self))))
 
 class MergeSCurve(object):
 	nav_lib = CDLL(NAV_LIB_DIR + NAV_LIB_NAME)
