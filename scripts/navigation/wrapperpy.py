@@ -68,7 +68,7 @@ class MergeSCurve(object):
 								pointer(final),
 								pointer(pt1),
 								pointer(pt2),
-								obs,
+								obs.vector,
 								c_int(obstacle_count),
 								c_int(current_id),
 								c_bool(teamBlue)	)
