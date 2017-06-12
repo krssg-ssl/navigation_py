@@ -6,3 +6,12 @@ class Obstacle(Structure):
 			  ("x2",	c_float),
 			  ("y2",	c_float), 
 			  ("radius",	c_float) ]
+
+class OrientedPoint(Structure):
+	_fields_ = [ ("x", c_float),
+				("y", c_float),
+				("theta", c_float) ]
+
+class ListOrientedPoint(Structure):
+	_fields_ = [ ("List", OrientedPoint * 50),
+				("size", c_int) ]
