@@ -90,4 +90,4 @@ class OMPL_Planner(object):
 		OMPL_Planner.nav_lib._OMPL_Planner_delete(self.planner)
 
 	def plan(self):
-		OMPL_Planner.nav_lib._OMPL_Planner_plan(self.planner)
+		return OMPL_Planner.nav_lib._OMPL_Planner_plan(self.planner)
