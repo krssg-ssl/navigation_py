@@ -4,8 +4,9 @@ from ctypes import *
 
 from obstacle import *
 import sys
-sys.path.append('/home/animesh//Documents/Dev/robocup/ssl/src/plays_py/scripts/utils/')
+sys.path.append('/home/animesh/Documents/Dev/robocup/ssl/src/plays_py/scripts/utils/')
 from geometry import *
+# from krssg_ssl_msgs.msg import path_data
 
 # Load shared library : navigation.so
 
@@ -72,3 +73,21 @@ class MergeSCurve(object):
 								c_int(obstacle_count),
 								c_int(current_id),
 								c_bool(teamBlue)	)
+
+class OMPL_Planner(object):
+	nav_lib = CDLL(NAV_LIB_DIR + NAV_LIB_NAME)
+	nav_lib._OMPL_Planner_new.restype = c_void_p
+	nav_lib._OMPL_Planner_new.argtypes = []
+	nav_lib._OMPL_Planner_delete.restype = None
+	nav_lib._OMPL_Planner_delete.argtypes = [c_void_p]
+	nav_lib._OMPL_Planner_plan.restype = ListOrientedPoint
+	nav_lib._OMPL_Planner_plan.argtypes = [c_void_p]
+
+	def __init__(self):
+		self.planner = OMPL_Planner.nav_lib._OMPL_Planner_new()
+
+	def __del__(self):
+		OMPL_Planner.nav_lib._OMPL_Planner_delete(self.planner)
+
+	def plan(self):
+		return OMPL_Planner.nav_lib._OMPL_Planner_plan(self.planner)
