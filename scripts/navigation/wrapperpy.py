@@ -72,3 +72,22 @@ class MergeSCurve(object):
 								c_int(obstacle_count),
 								c_int(current_id),
 								c_bool(teamBlue)	)
+
+class OMPL_Planner(object):
+	nav_lib = CDLL(NAV_LIB_DIR + NAV_LIB_NAME)
+	nav_lib._OMPL_Planner_new.restype = c_void_p
+	nav_lib._OMPL_Planner_new.argtypes = [OrientedPoint, OrientedPoint, ListObstacle]
+	nav_lib._OMPL_Planner_delete.restype = None
+	nav_lib._OMPL_Planner_delete.argtypes = [c_void_p]
+	nav_lib._OMPL_Planner_plan.restype = ListOrientedPoint
+	nav_lib._OMPL_Planner_plan.argtypes = [c_void_p]
+
+	def __init__(self, botPos, targetPos, obs_vec):
+		self.planner = OMPL_Planner.nav_lib._OMPL_Planner_new(botPos, targetPos, obs_vec)
+
+	def __del__(self):
+		OMPL_Planner.nav_lib._OMPL_Planner_delete(self.planner)
+
+	def plan(self):
+		return OMPL_Planner.nav_lib._OMPL_Planner_plan(self.planner)
+
